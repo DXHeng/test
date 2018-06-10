@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+
+<mapper namespace="com.xio.mapper.CustMapper">
+
+    <!--定义resultmap-->
+    <resultMap type="com.xio.pojo.SCust" id="cust_user">
+        <id column="cid" property="cid"/>
+        <result column="cust_name" property="custName"/>
+        <result column="cust_type" property="custType"/>
+        <result column="cust_phone" property="custPhone"/>
+        <result column="cust_address" property="custAddress"/>
+        <!--关联映射-->
+        <association property="user" javaType="com.xio.pojo.SUser">
+            <!-- column:user表的主键对应的列  property：user对象中id属性-->
+            <id column="uid" property="uid"/>
+            <result column="nickname" property="nickname"/>
+        </association>
+    </resultMap>
+
+    <select id="getCustList" resultMap="cust_user" parameterType="com.xio.pojo.SCust">
+        SELECT
+        *
+        FROM
+        s_cust a LEFT JOIN  s_user b ON a.CUST_LINK_USER=b.uid
+        WHERE  1 = 1
+        <if test="custType!=null">
+            AND a.cust_type=#{custType}
+        </if>
+        <if test="custName!=null and custName!=''">
+            AND a.cust_name LIKE '%${custName}%'
+        </if>
+    </select>
+
+</mapper>
